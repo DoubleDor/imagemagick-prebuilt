@@ -16,4 +16,4 @@ echo Changing owner from \$(id -u):\$(id -g) to $(id -u):$(id -u)
 chown -R $(id -u):$(id -u) /mnt/artifacts
 COMMANDS
 
-tar -zcvf imagemagick.tar.gz /mnt/artifacts/imagemagick
+tar -zcvf artifacts/imagemagick-prebuilt.tar.gz artifacts/imagemagick
