@@ -14,7 +14,7 @@ var request = require( 'request' ),
     q = require( 'q' );
 
 var GITHUB_RELEASE_URL = 'https://api.github.com/repos/DoubleDor/imagemagick-prebuilt/releases/latest';
-var INSTALL_SCRIPT = path.join( process.cwd(), 'install.sh' );
+var INSTALL_SCRIPT = path.join( __dirname, 'install.sh' );
 var DEFAULT_INSTALL_LOCATION = '/tmp/imagemagick/';
 
 var _request = function( url ) {
