@@ -69,7 +69,7 @@ var _downloadAndUntar = function( download_link ) {
 
             install_process
                 .on( 'close', function() {
-                    resolve( DEFAULT_INSTALL_LOCATION );
+                    resolve( path.join( DEFAULT_INSTALL_LOCATION, 'bin' ) );
                 } );
         } );
 };
