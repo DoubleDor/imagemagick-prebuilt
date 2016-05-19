@@ -91,28 +91,6 @@ var _downloadAndUntar = function( download_link ) {
 };
 
 /**
- * Installs the font tarbal (.tar.gz) by running the install_fonts.sh script
- *
- * @param  {String} font_tarbal_path Path to fonts tarbal
- * @return {Promise}
- */
-var _installFonts = function( font_tarbal_path ) {
-    return q
-        .Promise( function( resolve ) {
-            var install_arguments = [ font_tarbal_path ];
-
-            var install_process = child_process.spawn( FONT_INSTALL_SCRIPT, install_arguments );;
-            install_process.stdout.pipe( process.stdout );
-            install_process.stderr.pipe( process.stderr );
-
-            install_process
-                .on( 'close', function() {
-                    resolve();
-                } );
-        } );
-}
-
-/**
  * Main function for the installer. Returns a promise that installs imagemagick
  * by downloading it from the github releases page. It then returns the bin
  * path to the convert executable.
@@ -143,4 +121,3 @@ module.exports = function() {
             return convert_bin_path;
         } );
 };
-module.exports.installFonts = _installFonts;
