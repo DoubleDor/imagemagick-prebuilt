@@ -98,7 +98,7 @@ module.exports = function() {
     return q
         .async( function *() {
             if( fs.existsSync( DEFAULT_INSTALL_LOCATION ) ) {
-                return DEFAULT_INSTALL_LOCATION );
+                return DEFAULT_INSTALL_LOCATION;
             }
 
             var download_link = yield _getDownloadUrl();
@@ -108,7 +108,7 @@ module.exports = function() {
         } )()
         .then( function( install_dir ) {
             // Build /tmp/imagemagick/lib/bin/convert
-            var convert_bin_path = path.join( install_dir, 'bin', 'convert' )
+            var convert_bin_path = path.join( install_dir, 'bin', 'convert' );
 
             // Add /tmp/imagemagick/lib/ to LD_LIBRARY_PATH so that the exe can
             // find the .so's
