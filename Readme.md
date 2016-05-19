@@ -11,11 +11,48 @@ npm install --save imagemagick-prebuilt
 ```javascript
 var imagemagick_prebuilt = require( 'imagemagick-prebuilt' );
 
-return q
-    .async( function *() {
-        imagemagick_bin_location = yield imagemagick_prebuilt();
-        console.log( `ImageMagick installed: ${imagemagick_bin_location}` );
-    } )();
+var child_process = require( 'child_process' );
+
+exports.handler = function( event, context ) {
+    imagemagick_prebuilt()
+        .then( function( imagemagick_bin_location ) {
+            // ImageMagick logo creation test:
+            // convert logo: logo.gif
+            var convert_process = child_process
+                .spawn( imagemagick_bin_location, [ 'logo:', 'logo.gif' ] )
+
+            convert_process
+                .on( 'close', function() {
+                    context.success();
+                } );
+        } );
+};
+```
+
+Or with `q.async`
+
+```javascript
+var imagemagick_prebuilt = require( 'imagemagick-prebuilt' );
+
+var child_process = require( 'child_process' );
+
+exports.handler = function( event, context ) {
+    return q
+        .async( function *() {
+            imagemagick_bin_location = yield imagemagick_prebuilt();
+            console.log( `ImageMagick installed: ${imagemagick_bin_location}` );
+
+            // ImageMagick logo creation test:
+            // convert logo: logo.gif
+            var convert_process = child_process
+                .spawn( imagemagick_bin_location, [ 'logo:', 'logo.gif' ] )
+
+            convert_process
+                .on( 'close', function() {
+                    context.success();
+                } );
+        } )();
+};
 ```
 
 Will be installed to `/tmp/imagemagick`
@@ -25,6 +62,8 @@ Will be installed to `/tmp/imagemagick`
 ```
 ./build.sh
 ```
+
+Build is output to `artifacts/imagemagick-prebuilt.tar.gz`
 
 ```
 ./upload.sh ${verison_number}
