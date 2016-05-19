@@ -1,6 +1,6 @@
 {
   "name": "imagemagick-prebuilt",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Asyncronously installs the latest version of imagemagick-prebuilt at the desired location",
   "main": "index.js",
   "scripts": {
