@@ -8,7 +8,8 @@
  */
 
 var child_process = require( 'child_process' ),
-    path = require( 'path' );
+    path = require( 'path' ),
+    fs = require( 'fs' );
 
 var request = require( 'request' ),
     q = require( 'q' );
