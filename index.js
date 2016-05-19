@@ -17,6 +17,11 @@ var GITHUB_RELEASE_URL = 'https://api.github.com/repos/DoubleDor/imagemagick-pre
 var INSTALL_SCRIPT = path.join( __dirname, 'install.sh' );
 var DEFAULT_INSTALL_LOCATION = '/tmp/imagemagick/';
 
+/**
+ * Promise wrapper for request
+ * @param  {String} url         The Url to GET
+ * @return {Promise<String>}    Return the response body
+ */
 var _request = function( url ) {
     return new q
         .Promise( function( resolve, reject ) {
@@ -33,11 +38,15 @@ var _request = function( url ) {
         } );
 }
 
+/**
+ * Gets the latest download link by chcking GITHUB_RELEASE_URL, and pulling
+ * the browser_download_url from the latest
+ * @return {Promise<String>} The tarbal download link
+ */
 var _getDownloadUrl = function() {
     return q
         .async( function *() {
             var release_response = yield _request( GITHUB_RELEASE_URL );
-            console.log( release_response );
 
             try {
                 var release_response_json = JSON.parse( release_response );
@@ -57,7 +66,12 @@ var _getDownloadUrl = function() {
             return release_response_json.assets[ 0 ].browser_download_url;
         } )();
 };
-
+/**
+ * Runs the install.sh script, which is responsible for downloading tarbal,
+ * extracting imagemagick and running the font loading script.
+ * @param  {String} download_link Link to the tarbal
+ * @return {Promise<String>}      Returns the install location
+ */
 var _downloadAndUntar = function( download_link ) {
     return q
         .Promise( function( resolve ) {
@@ -69,16 +83,39 @@ var _downloadAndUntar = function( download_link ) {
 
             install_process
                 .on( 'close', function() {
-                    resolve( path.join( DEFAULT_INSTALL_LOCATION, 'bin' ) );
+                    resolve( DEFAULT_INSTALL_LOCATION );
                 } );
         } );
 };
 
+/**
+ * Main function for the installer. Returns a promise that installs imagemagick
+ * by downloading it from the github releases page. It then returns the bin
+ * path to the convert executable.
+ * @return {Promise<String>}
+ */
 module.exports = function() {
     return q
         .async( function *() {
+            if( fs.existsSync( DEFAULT_INSTALL_LOCATION ) ) {
+                return DEFAULT_INSTALL_LOCATION );
+            }
+
             var download_link = yield _getDownloadUrl();
             var install_location = _downloadAndUntar( download_link );
+
             return install_location;
-        } )();
+        } )()
+        .then( function( install_dir ) {
+            // Build /tmp/imagemagick/lib/bin/convert
+            var convert_bin_path = path.join( install_dir, 'bin', 'convert' )
+
+            // Add /tmp/imagemagick/lib/ to LD_LIBRARY_PATH so that the exe can
+            // find the .so's
+            var lib_path = path.join( install_dir, 'lib' );
+            process.env.LD_LIBRARY_PATH = ( process.env.LD_LIBRARY_PATH ) ? process.env.LD_LIBRARY_PATH + ':' : '';
+            process.env.LD_LIBRARY_PATH += lib_path;
+
+            return convert_bin_path;
+        } );
 };
