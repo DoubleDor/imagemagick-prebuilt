@@ -66,5 +66,5 @@ Will be installed to `/tmp/imagemagick`
 Build is output to `artifacts/imagemagick-prebuilt.tar.gz`
 
 ```
-./upload.sh ${verison_number}
+./upload.sh ${version_number}
 ```
