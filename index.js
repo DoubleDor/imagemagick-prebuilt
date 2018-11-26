@@ -62,6 +62,7 @@ var _getDownloadUrl = function() {
                 !release_response_json.hasOwnProperty( 'assets' ) ||
                 !release_response_json.assets.length === 1 ||
                 !release_response_json.assets[ 0 ].hasOwnProperty( 'browser_download_url' ) ) {
+                console.log( 'Bad Response from Github:', release_response_json );
                 throw new Error( 'Bad resposne from github' );
             }
 
